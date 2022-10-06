@@ -9,12 +9,12 @@ README = (HERE / "README.md").read_text(encoding='utf8')
 
 # This call to setup() does all the work
 setup(
-    name="tidecv",
+    name="tidecv-light",
     version="1.0.1",
     description="A General Toolbox for Identifying ObjectDetection Errors",
     long_description=README,
     long_description_content_type="text/markdown",
-    url="https://github.com/dbolya/tide",
+    url="https://github.com/jpsimen/tide",
     author="Daniel Bolya",
     author_email="dbolya@gatech.edu",
     license="MIT",
