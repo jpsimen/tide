@@ -81,9 +81,11 @@ class TIDEExample:
         for id_d, d in enumerate(detections):
             for id_g, g in enumerate(gt):
                 self.gt_iou[id_d, id_g] = jaccard(d, g)
-        assert (
-            np.amin(self.gt_iou) >= 0.0
-        ), "jaccard array contains values smaller than zero!"
+
+        if len(detections) > 0 and len(gt) > 0:
+            assert (
+                np.amin(self.gt_iou) >= 0.0
+            ), "jaccard array contains values smaller than zero!"
 
         # IoU is [len(detections), len(gt)]
         # self.gt_iou = mask_utils.iou(
