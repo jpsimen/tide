@@ -163,6 +163,11 @@ class TIDEExample:
                         pred_elem["used"] = None
 
         if len(gt) == 0:
+            # No ground truth, but we still need to process predictions as false positives
+            for pred_idx, pred in enumerate(preds):
+                pred["used"] = False
+                pred["iou"] = 0.0
+                pred["matched_with"] = None
             return
 
         # Some matrices used just for error calculation
@@ -218,7 +223,10 @@ class TIDERun:
     def _run(self):
         """And awaaay we go"""
 
-        for image in self.gt.images:
+        # Process all images that have either ground truth or predictions
+        all_image_ids = set(self.gt.images.keys()).union(set(self.preds.images.keys()))
+        
+        for image in all_image_ids:
             x = self.preds.get(image)
             y = self.gt.get(image)
 
@@ -358,6 +366,28 @@ class TIDERun:
                     if self.run_errors:
                         self._add_error(MissedError(truth))
                         self.false_negatives[truth["class"]].append(truth)
+            return
+
+        # Handle case where there are predictions but no ground truth
+        if len(gt) == 0:
+            # All predictions are false positives when there's no ground truth
+            for pred in preds:
+                pred["used"] = False
+                pred["iou"] = 0.0
+                pred["matched_with"] = None
+                pred["info"] = {"iou": 0.0, "used": False}
+                
+                self.ap_data.push(
+                    pred["class"],
+                    pred["_id"], 
+                    pred["score"],
+                    False,  # This is a false positive
+                    pred["info"],
+                )
+                
+                if self.run_errors:
+                    # All predictions are background errors when there's no GT
+                    self._add_error(BackgroundError(pred))
             return
 
         ex = TIDEExample(

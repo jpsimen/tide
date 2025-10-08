@@ -52,6 +52,8 @@ class APDataObject:
         self.num_gt_positives += num_positives
 
     def is_empty(self) -> bool:
+        # A class is considered empty only if it has no data points AND no ground truth
+        # If it has predictions but no ground truth, it should still be evaluated (with AP=0)
         return len(self.data_points) == 0 and self.num_gt_positives == 0
 
     def get_pr_curve(self) -> tuple:
@@ -145,7 +147,14 @@ class ClassedAPDataObject:
         self.objs[class_].add_gt_positives(num_positives)
 
     def get_mAP(self) -> float:
-        aps = [x.get_ap() for x in self.objs.values() if not x.is_empty()]
+        # Include all classes that have data points (predictions), even if they have no GT
+        aps = []
+        for obj in self.objs.values():
+            if len(obj.data_points) > 0 or obj.num_gt_positives > 0:
+                aps.append(obj.get_ap())
+        
+        if len(aps) == 0:
+            return 0.0
         return sum(aps) / len(aps)
 
     def get_gt_positives(self) -> dict:

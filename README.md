@@ -1,3 +1,9 @@
+# A minimal version of TIDE
+Numpy is the only dependency of this library. 
+To achieve this, the coco datasets and plotting features were removed.
+The core funcionality is the same as in *dbolya/tide*.
+
+
 # A General **T**oolbox for **I**dentifying Object **D**etection **E**rrors
 ```
 ████████╗██╗██████╗ ███████╗
@@ -16,12 +22,6 @@ Check out our ECCV 2020 short video for an explanation of what TIDE can do:
 
 # Installation
 
-TIDE is available as a python package for python 3.6+ as [tidecv](https://pypi.org/project/tidecv/). To install, simply install it with pip:
-```shell
-pip3 install tidecv
-```
-The current version is v1.0.1 ([changelog](https://github.com/dbolya/tide/blob/master/CHANGELOG.md)).
-
 This fork contains a light version which only depends on numpy. 
 To achieve this, the coco datasets and most reporting features were removed.
 It is available on [PyPi](https://pypi.org/project/tidecv-light/) as well.
@@ -38,8 +38,7 @@ from tidecv import TIDE, datasets
 
 tide = TIDE()
 tide.evaluate(datasets.COCO(), datasets.COCOResult('path/to/your/results/file'), mode=TIDE.BOX) # Use TIDE.MASK for masks
-tide.summarize()  # Summarize the results as tables in the console
-tide.plot()       # Show a summary figure. Specify a folder and it'll output a png to that folder.
+tide.summarize()  # Summarize the results as tables in the console.
 ```
 
 This prints evaluation summary tables to the console:
@@ -63,9 +62,6 @@ bbox AP @ 50: 61.80
 =============================
 ```
 
-And a summary plot for your model's errors:
-
-![A summary plot](https://dbolya.github.io/tide/mask_rcnn_bbox_bbox_summary.png)
 
 ## Jupyter Notebook
 
